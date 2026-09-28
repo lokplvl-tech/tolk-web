@@ -17,6 +17,10 @@ ARG JS_SDK_BRANCH="master"
 
 WORKDIR /src
 
+# Tolk: outside CI Nx starts its daemon, which cannot compute the project graph inside BuildKit;
+# "nx build" then exits without building and webapp/ is missing. Compute the graph in-process.
+ENV NX_DAEMON=false
+
 # Install dependencies
 COPY --parents package.json pnpm-lock.yaml pnpm-workspace.yaml patches scripts **/package.json /src/
 RUN pnpm install --frozen-lockfile
