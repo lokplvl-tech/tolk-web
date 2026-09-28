@@ -369,8 +369,12 @@ export default class InviteDialog extends React.PureComponent<Props, IInviteDial
 
         let newMember: Member | undefined;
         if (this.state.filterText.startsWith("@")) {
-            // Assume mxid
-            newMember = new DirectoryMember({ user_id: this.state.filterText });
+            // Assume mxid. A bare "@localpart" is not a Matrix ID: createRoom would silently drop the
+            // invite and leave a one-person DM, so complete it with our own server domain (Tolk).
+            let userId = this.state.filterText;
+            const ownDomain = MatrixClientPeg.safeGet().getDomain();
+            if (ownDomain && /^@[^:\s]+$/.test(userId)) userId = `${userId}:${ownDomain}`;
+            newMember = new DirectoryMember({ user_id: userId });
         } else if (SettingsStore.getValue(UIFeature.IdentityServer)) {
             // Assume email
             if (this.canInviteThirdParty()) {

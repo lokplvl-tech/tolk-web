@@ -404,6 +404,26 @@ describe("InviteDialog", () => {
         ]);
     });
 
+    it("should complete a bare @localpart with our server domain when starting a DM", async () => {
+        // "@alice" alone is not a Matrix ID: without the domain the DM room was created with no invite.
+        render(<InviteDialog kind={InviteKind.Dm} onFinished={vi.fn()} />);
+        await enterIntoSearchField("@alice");
+        await userEvent.click(screen.getByRole("button", { name: "Go" }));
+        expect(startDmOnFirstMessage).toHaveBeenCalledWith(mockClient, [
+            new DirectoryMember({
+                user_id: aliceId,
+            }),
+        ]);
+    });
+
+    it("should not complete a lone @ or text with spaces", async () => {
+        render(<InviteDialog kind={InviteKind.Dm} onFinished={vi.fn()} />);
+        await enterIntoSearchField("@");
+        expect(screen.queryByText("@:" + serverDomain)).not.toBeInTheDocument();
+        await enterIntoSearchField("@al ice");
+        expect(screen.queryByText("@al ice:" + serverDomain)).not.toBeInTheDocument();
+    });
+
     it("should not allow pasting the same user multiple times", async () => {
         render(<InviteDialog kind={InviteKind.Invite} roomId={roomId} onFinished={vi.fn()} />);
 
