@@ -3284,9 +3284,7 @@
         "show_thread_filter": "Affiche :"
     },
     "threads_activity_centre": {
-        "header": "Activité des fils de discussions",
-        "no_rooms_with_threads_notifs": "Vous n’avez pas encore de salons avec des notifications de fil de discussion.",
-        "no_rooms_with_unread_threads": "Vous n'avez pas encore de salons contenant des fils de discussion non lus."
+        "header": "Activité des fils de discussions"
     },
     "time": {
         "date_at_time": "%(date)s à %(time)s",
